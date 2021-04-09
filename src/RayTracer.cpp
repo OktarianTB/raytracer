@@ -93,7 +93,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			}
 
 			vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
-			ray refraction_ray(position, T);
+			ray refraction_ray(position, T.normalize());
 			refraction_color = traceRay(scene, refraction_ray, thresh, depth + 1, materials);
 			refraction_color = prod(refraction_color, m.kt); // multiply color by the transmissive value
 		}
