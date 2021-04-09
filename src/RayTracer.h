@@ -22,9 +22,11 @@ public:
 	void traceLines( int start = 0, int stop = 10000000 );
 	void tracePixel( int i, int j );
 
+	Scene* getScene() const { return scene; }
 	bool loadScene( char* fn );
-
 	bool sceneLoaded();
+
+	int max_depth = 0;
 
 private:
 	unsigned char *buffer;

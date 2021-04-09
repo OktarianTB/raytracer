@@ -532,12 +532,16 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 		if (hasField(child, "constant_attenuation_coeff") 
 			&& hasField(child, "linear_attenuation_coeff") 
 			&& hasField(child, "quadratic_attenuation_coeff")) {
+			/*
 			scene->add(new PointLight(scene,
 				tupleToVec(getField(child, "position")),
 				tupleToVec(getColorField(child)),
 				getField(child, "constant_attenuation_coeff")->getScalar(),
 				getField(child, "linear_attenuation_coeff")->getScalar(),
-				getField(child, "quadratic_attenuation_coeff")->getScalar()));
+				getField(child, "quadratic_attenuation_coeff")->getScalar()));*/
+			scene->add(new PointLight(scene,
+				tupleToVec(getField(child, "position")),
+				tupleToVec(getColorField(child))));
 		}
 		else {
 			scene->add(new PointLight(scene,

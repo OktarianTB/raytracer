@@ -274,7 +274,10 @@ public:
 	Camera *getCamera() { return &camera; }
 
 	vec3f getAmbient() { return ambientLight; }
-	
+
+	double distAttenConstCoeff;
+	double distAttenLinearCoeff;
+	double distAttenQuadraticCoeff;
 
 private:
     list<Geometry*> objects;
