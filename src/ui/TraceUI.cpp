@@ -135,6 +135,7 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->raytracer->getScene()->distAttenConstCoeff = pUI->m_nAttenuationConstant;
 		pUI->raytracer->getScene()->distAttenLinearCoeff = pUI->m_nAttenuationLinear;
 		pUI->raytracer->getScene()->distAttenQuadraticCoeff = pUI->m_nAttenuationQuadratic;
+		pUI->raytracer->getScene()->threshold = pUI->m_nThreshold;
 		
 		// Save the window label
 		const char *old_label = pUI->m_traceGlWindow->label();

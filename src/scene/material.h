@@ -28,9 +28,17 @@ public:
 
     Material( const vec3f& e, const vec3f& a, const vec3f& s, 
               const vec3f& d, const vec3f& r, const vec3f& t, double sh, double in)
-        : ke( e ), ka( a ), ks( s ), kd( d ), kr( r ), kt( t ), shininess( sh ), index( in ) {}
+        : ke( e ), ka( a ), ks( s ), kd( d ), kr( r ), kt( t ), shininess( sh ), index( in ) 
+    {
+        material_id = current_count++;
+    }
 
 	virtual vec3f shade( Scene *scene, const ray& r, const isect& i ) const;
+
+    static Material air()
+    {
+        return Material({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, { 1,1,1 }, 0, 1);
+    }
 
     vec3f ke;                    // emissive
     vec3f ka;                    // ambient
@@ -38,6 +46,9 @@ public:
     vec3f kd;                    // diffuse
     vec3f kr;                    // reflective
     vec3f kt;                    // transmissive
+
+    int material_id;
+    static int current_count;
     
     double shininess;
     double index;               // index of refraction

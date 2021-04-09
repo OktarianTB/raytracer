@@ -8,6 +8,7 @@
 #include "scene/ray.h"
 #include "fileio/read.h"
 #include "fileio/parse.h"
+#include <cmath>
 
 // Trace a top-level ray through normalized window coordinates (x,y)
 // through the projection plane, and out into the scene.  All we do is
@@ -17,14 +18,22 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 {
     ray r( vec3f(0,0,0), vec3f(0,0,0) );
     scene->getCamera()->rayThrough( x,y,r );
-	return traceRay( scene, r, vec3f(1.0,1.0,1.0), 0 ).clamp();
+
+	auto materials = std::stack<Material>();
+	materials.push(Material::air());
+
+	return traceRay(scene, r, vec3f(1.0,1.0,1.0), 0, materials).clamp();
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here
 // (or places called from here) to handle reflection, refraction, etc etc.
 vec3f RayTracer::traceRay( Scene *scene, const ray& r, 
-	const vec3f& thresh, int depth )
+	const vec3f& thresh, int depth, std::stack<Material> materials)
 {
+	if (depth > max_depth) {
+		return vec3f(0, 0, 0);
+	}
+
 	isect i;
 
 	if( scene->intersect( r, i ) ) {
@@ -40,8 +49,58 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		// rays.
 
 		const Material& m = i.getMaterial();
-		return m.shade(scene, r, i);
-	
+		vec3f phong = m.shade(scene, r, i);
+
+		if (scene->threshold > phong.length())
+		{
+			return phong;
+		}
+
+		// Intersection values
+		vec3f normal = i.N;
+		vec3f direction = r.getDirection();
+		vec3f position = r.at(i.t);
+
+		if (materials.top().material_id == m.material_id)
+		{
+			normal = -normal;
+		}
+
+		// Calculate reflection
+		vec3f reflection_direction = direction - 2 * direction.dot(normal) * normal;
+		ray reflection_ray(position, reflection_direction.normalize());
+
+		vec3f reflection_color = traceRay(scene, reflection_ray, thresh, depth + 1, materials);
+		reflection_color = prod(reflection_color, m.kr); // multiply color by the reflective value
+
+		// Calculate refraction
+		vec3f refraction_color(0, 0, 0);
+
+		if (m.kt.length() > 0) // Check the material has some transparency
+		{
+			double sourceRefIndex = materials.top().index;
+			double targetRefIndex;
+
+			if (materials.top().material_id == m.material_id)
+			{
+				materials.pop();
+				targetRefIndex = materials.top().index;
+			}
+			else
+			{
+				materials.push(m);
+				targetRefIndex = m.index;
+			}
+
+			vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
+			ray refraction_ray(position, T);
+			refraction_color = traceRay(scene, refraction_ray, thresh, depth + 1, materials);
+			refraction_color = prod(refraction_color, m.kt); // multiply color by the transmissive value
+		}
+
+
+		// Return contributions of phong shading + reflection + refraction (todo)
+		return phong + reflection_color + refraction_color;
 	} else {
 		// No intersection.  This ray travels to infinity, so we color
 		// it according to the background color, which in this (simple) case
@@ -49,6 +108,16 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 
 		return vec3f( 0.0, 0.0, 0.0 );
 	}
+}
+
+// i: incidence vector, n: normal, sourceRefIndex: source refraction index, targetRefIndex: target refraction index
+vec3f RayTracer::calculate_refraction(vec3f i, vec3f n, double eta1, double eta2)
+{
+	// I don't know if this is correct!!!
+	double theta1 = i.dot(n);
+	double theta2 = asin((eta1 * sin(theta1)) / eta2);
+	vec3f T = (eta1 / eta2) * (i + n * cos(theta1)) - n * cos(theta2);
+	return T;
 }
 
 RayTracer::RayTracer()

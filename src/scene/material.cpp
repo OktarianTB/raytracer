@@ -2,6 +2,8 @@
 #include "material.h"
 #include "light.h"
 
+int Material::current_count = 0;
+
 // Apply the phong model to this point on the surface of the object, returning
 // the color of that point.
 vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const

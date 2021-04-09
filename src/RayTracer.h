@@ -5,6 +5,7 @@
 
 #include "scene/scene.h"
 #include "scene/ray.h"
+#include <stack>
 
 class RayTracer
 {
@@ -13,8 +14,9 @@ public:
     ~RayTracer();
 
     vec3f trace( Scene *scene, double x, double y );
-	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth );
+	vec3f traceRay( Scene *scene, const ray& r, const vec3f& thresh, int depth, std::stack<Material> materials);
 
+	vec3f calculate_refraction(vec3f i, vec3f n, double eta1, double eta2);
 
 	void getBuffer( unsigned char *&buf, int &w, int &h );
 	double aspectRatio();

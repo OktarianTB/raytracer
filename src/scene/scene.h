@@ -278,6 +278,7 @@ public:
 	double distAttenConstCoeff;
 	double distAttenLinearCoeff;
 	double distAttenQuadraticCoeff;
+	double threshold;
 
 private:
     list<Geometry*> objects;
