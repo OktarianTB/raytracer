@@ -13,7 +13,21 @@ vec3f DirectionalLight::shadowAttenuation( const vec3f& P ) const
 {
     // YOUR CODE HERE:
     // You should implement shadow-handling code here.
-    return vec3f(1,1,1);
+	vec3f dir = getDirection(P).normalize();
+	ray shadRay = ray(P, dir);
+	vec3f shadAtten = getColor(P);
+	isect iPoint;
+
+	while (scene->intersect(shadRay, iPoint)) {
+		// Non-transparent material
+		if (iPoint.getMaterial().kt.iszero())
+			return vec3f(0.0, 0.0, 0.0);
+		// Transparent material
+		shadAtten = prod(shadAtten, iPoint.getMaterial().kt);
+		shadRay = ray(shadRay.at(iPoint.t), dir);
+	}
+
+	return shadAtten;
 }
 
 vec3f DirectionalLight::getColor( const vec3f& P ) const
@@ -58,5 +72,19 @@ vec3f PointLight::shadowAttenuation(const vec3f& P) const
 {
     // YOUR CODE HERE:
     // You should implement shadow-handling code here.
-    return vec3f(1,1,1);
+	vec3f dir = getDirection(P).normalize();
+	ray shadRay = ray(P, dir);
+	vec3f shadAtten = getColor(P);
+	isect iPoint;
+
+	while (scene->intersect(shadRay, iPoint)) {
+		// Non-transparent material
+		if (iPoint.getMaterial().kt.iszero())
+			return vec3f(0.0, 0.0, 0.0);
+		// Transparent material
+		shadAtten = prod(shadAtten, iPoint.getMaterial().kt);
+		shadRay = ray(shadRay.at(iPoint.t), dir);
+	}
+
+	return shadAtten;
 }
