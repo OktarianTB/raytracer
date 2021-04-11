@@ -67,11 +67,14 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		}
 
 		// Calculate reflection
-		vec3f reflection_direction = direction - 2 * direction.dot(normal) * normal;
-		ray reflection_ray(position, reflection_direction.normalize());
+		vec3f reflection_color(0, 0, 0);
 
-		vec3f reflection_color = traceRay(scene, reflection_ray, thresh, depth + 1, materials);
-		reflection_color = prod(reflection_color, m.kr); // multiply color by the reflective value
+		if (m.kr.length() > 0) {
+			vec3f reflection_direction = direction - 2 * direction.dot(normal) * normal;
+			ray reflection_ray(position, reflection_direction.normalize());
+			reflection_color = traceRay(scene, reflection_ray, thresh, depth + 1, materials);
+			reflection_color = prod(reflection_color, m.kr); // multiply color by the reflective value
+		}
 
 		// Calculate refraction
 		vec3f refraction_color(0, 0, 0);
@@ -92,10 +95,17 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 				targetRefIndex = m.index;
 			}
 
-			vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
-			ray refraction_ray(position, T.normalize());
-			refraction_color = traceRay(scene, refraction_ray, thresh, depth + 1, materials);
-			refraction_color = prod(refraction_color, m.kt); // multiply color by the transmissive value
+			// Total internal reflection occurs when angle theta_t is from 90 to 180 degrees, i.e. cos(theta_i) <= 0
+			double ratio = sourceRefIndex / targetRefIndex;
+			double cos_t = sqrt(1 - ratio * ratio * (1 - normal.dot(-direction) * normal.dot(-direction))); // eq 16.32 Foley
+
+			// Taking care of total internal reflection
+			if (cos_t > 0.0) {
+				vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
+				ray refraction_ray(position, T.normalize());
+				refraction_color = traceRay(scene, refraction_ray, thresh, depth + 1, materials);
+				refraction_color = prod(refraction_color, m.kt); // multiply color by the transmissive value
+			}
 		}
 
 
@@ -114,9 +124,16 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 vec3f RayTracer::calculate_refraction(vec3f i, vec3f n, double eta1, double eta2)
 {
 	// I don't know if this is correct!!!
-	double theta1 = i.dot(n);
+	/*double theta1 = i.dot(n);
 	double theta2 = asin((eta1 * sin(theta1)) / eta2);
 	vec3f T = (eta1 / eta2) * (i + n * cos(theta1)) - n * cos(theta2);
+	return T;*/
+
+	// Tried to use the eq. 16.33 from Foley textbook
+	vec3f I = -i; // incident ray
+	double index_ratio = eta1 / eta2;
+	double cos_i = n.dot(i);
+	vec3f T = (index_ratio * cos_i - sqrt(1 - index_ratio * index_ratio * (1 - cos_i * cos_i))) * n - index_ratio * I;
 	return T;
 }
 

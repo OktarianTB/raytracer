@@ -21,7 +21,8 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 	// somewhere in your code in order to compute shadows and light falloff.
 
 	// Add emissive and ambient light components
-	vec3f I = ke + prod(ka, scene->getAmbient());
+	vec3f I = ke;
+	I += prod(prod(ka, scene->getAmbient()), vec3f(1.0, 1.0, 1.0) - kt); // multiplied by 1-kt for refraction
 
 	// Find intersection point
 	vec3f P = r.at(i.t);
@@ -41,7 +42,7 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 		V = V.normalize();
 
 		// Find diffuse and specular components
-		vec3f diffuseRef = kd * maximum(i.N.dot(L), 0.0);
+		vec3f diffuseRef = prod(kd * maximum(i.N.dot(L), 0.0), vec3f(1.0, 1.0, 1.0) - kt); // multiplied by 1 - kt for refraction
 		vec3f specularRef = ks * pow(maximum(V.dot(R), 0.0), shininess * 128);
 
 		vec3f att = (*iterator)->distanceAttenuation(P) * (*iterator)->shadowAttenuation(P);
