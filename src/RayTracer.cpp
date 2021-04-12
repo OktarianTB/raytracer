@@ -57,8 +57,8 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		}
 
 		// Intersection values
-		vec3f normal = i.N;
-		vec3f direction = r.getDirection();
+		vec3f normal = i.N.normalize();
+		vec3f direction = r.getDirection().normalize();
 		vec3f position = r.at(i.t);
 
 		if (materials.top().material_id == m.material_id)
@@ -95,13 +95,8 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 				targetRefIndex = m.index;
 			}
 
-			// Total internal reflection occurs when angle theta_t is from 90 to 180 degrees, i.e. cos(theta_i) <= 0
-			double ratio = sourceRefIndex / targetRefIndex;
-			double cos_t = sqrt(1 - ratio * ratio * (1 - normal.dot(-direction) * normal.dot(-direction))); // eq 16.32 Foley
-
-			// Taking care of total internal reflection
-			if (cos_t > 0.0) {
-				vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
+			vec3f T = calculate_refraction(direction, normal, sourceRefIndex, targetRefIndex);
+			if (!T.iszero()) {
 				ray refraction_ray(position, T.normalize());
 				refraction_color = traceRay(scene, refraction_ray, thresh, depth + 1, materials);
 				refraction_color = prod(refraction_color, m.kt); // multiply color by the transmissive value
@@ -129,11 +124,17 @@ vec3f RayTracer::calculate_refraction(vec3f i, vec3f n, double eta1, double eta2
 	vec3f T = (eta1 / eta2) * (i + n * cos(theta1)) - n * cos(theta2);
 	return T;*/
 
-	// Tried to use the eq. 16.33 from Foley textbook
 	vec3f I = -i; // incident ray
-	double index_ratio = eta1 / eta2;
-	double cos_i = n.dot(i);
-	vec3f T = (index_ratio * cos_i - sqrt(1 - index_ratio * index_ratio * (1 - cos_i * cos_i))) * n - index_ratio * I;
+	double eta = eta1 / eta2;
+	double cosi = n.dot(I);
+	double tir = 1 - eta * eta * (1 - cosi * cosi); // Eq 16.32 Foley
+
+	// Taking care of total internal reflection which occurs when angle theta_t is from 90 to 180 degrees, i.e. cos(theta_i) < 0
+	if (tir < 0)
+		return vec3f(0.0, 0.0, 0.0); // no refraction, only reflection
+
+	// Eq 16.33 Foley
+	vec3f T = (eta * cosi - sqrt(tir)) * n - eta * I;
 	return T;
 }
 
