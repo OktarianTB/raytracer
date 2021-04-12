@@ -280,6 +280,11 @@ public:
 	double distAttenQuadraticCoeff;
 	double threshold;
 
+	bool depthField        = false;
+	bool softShadow        = false;
+	bool motionBlur        = false;
+	bool glossyReflection = false;
+
 private:
     list<Geometry*> objects;
 	list<Geometry*> nonboundedobjects;

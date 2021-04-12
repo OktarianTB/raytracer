@@ -117,6 +117,26 @@ void TraceUI::cb_thresholdSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nThreshold = double(((Fl_Slider*)o)->value());
 }
 
+void TraceUI::cb_depthField(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nDepthField = bool(((Fl_Slider*)o)->value());
+}
+
+void TraceUI::cb_softShadow(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nSoftShadow = bool(((Fl_Slider*)o)->value());
+}
+
+void TraceUI::cb_motionBlur(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nMotionBlur = bool(((Fl_Slider*)o)->value());
+}
+
+void TraceUI::cb_glossyReflection(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nGlossyReflection = bool(((Fl_Slider*)o)->value());
+}
+
 void TraceUI::cb_render(Fl_Widget* o, void* v)
 {
 	char buffer[256];
@@ -136,6 +156,12 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->raytracer->getScene()->distAttenLinearCoeff = pUI->m_nAttenuationLinear;
 		pUI->raytracer->getScene()->distAttenQuadraticCoeff = pUI->m_nAttenuationQuadratic;
 		pUI->raytracer->getScene()->threshold = pUI->m_nThreshold;
+
+		// CUSTOM ADDED BY ALUA
+		pUI->raytracer->getScene()->depthField = pUI->m_nDepthField;
+		pUI->raytracer->getScene()->softShadow = pUI->m_nSoftShadow;
+		pUI->raytracer->getScene()->motionBlur = pUI->m_nMotionBlur;
+		pUI->raytracer->getScene()->glossyReflection = pUI->m_nGlossyReflection;
 		
 		// Save the window label
 		const char *old_label = pUI->m_traceGlWindow->label();
@@ -381,8 +407,29 @@ TraceUI::TraceUI() {
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 
+		m_depthFieldButton = new Fl_Check_Button(10, 205, 100, 25, "&Depth of Field");
+		m_depthFieldButton->user_data((void*)(this));
+		m_depthFieldButton->value(false);
+		m_depthFieldButton->callback(cb_depthField);
+
+		m_softShadowButton = new Fl_Check_Button(150, 205, 100, 25, "&Soft Shadow");
+		m_softShadowButton->user_data((void*)(this));
+		m_softShadowButton->value(false);
+		m_softShadowButton->callback(cb_softShadow);
+
+		m_motionBlurButton = new Fl_Check_Button(10, 225, 100, 25, "&Motion Blur");
+		m_motionBlurButton->user_data((void*)(this));
+		m_motionBlurButton->value(false);
+		m_motionBlurButton->callback(cb_motionBlur);
+
+		m_glossyReflectionButton = new Fl_Check_Button(150, 225, 100, 25, "&Glossy Reflection");
+		m_glossyReflectionButton->user_data((void*)(this));
+		m_glossyReflectionButton->value(false);
+		m_glossyReflectionButton->callback(cb_glossyReflection);
+
 		m_mainWindow->callback(cb_exit2);
 		m_mainWindow->when(FL_HIDE);
+
     m_mainWindow->end();
 
 	// image view

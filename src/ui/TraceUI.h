@@ -37,6 +37,11 @@ public:
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
 
+	Fl_Button*          m_depthFieldButton;
+	Fl_Button*          m_softShadowButton;
+	Fl_Button*          m_motionBlurButton;
+	Fl_Button*          m_glossyReflectionButton;
+
 	TraceGLWindow*		m_traceGlWindow;
 
 	// member functions
@@ -63,6 +68,11 @@ private:
 	double		m_nAmbientLight;
 	double		m_nThreshold;
 
+	bool        m_nDepthField       = false;
+	bool        m_nSoftShadow       = false;
+	bool        m_nMotionBlur       = false;
+	bool        m_nGlossyReflection = false;
+
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -85,6 +95,11 @@ private:
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);
+
+	static void cb_depthField(Fl_Widget* o, void* v);
+	static void cb_softShadow(Fl_Widget* o, void* v);
+	static void cb_motionBlur(Fl_Widget* o, void* v);
+	static void cb_glossyReflection(Fl_Widget* o, void* v);
 };
 
 #endif
