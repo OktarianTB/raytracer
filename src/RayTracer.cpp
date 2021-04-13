@@ -9,6 +9,7 @@
 #include "fileio/read.h"
 #include "fileio/parse.h"
 #include "SceneObjects/Square.h"
+#include "helper.h"
 #include <cmath>
 
 // Trace a top-level ray through normalized window coordinates (x,y)
@@ -72,9 +73,25 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 
 		if (m.kr.length() > 0) {
 			vec3f reflection_direction = direction - 2 * direction.dot(normal) * normal;
-			ray reflection_ray(position, reflection_direction.normalize());
-			reflection_color = traceRay(scene, reflection_ray, thresh, depth + 1, materials);
-			reflection_color = prod(reflection_color, m.kr); // multiply color by the reflective value
+			if (!scene->glossyReflection) {
+				ray reflection_ray(position, reflection_direction.normalize());
+				reflection_color = traceRay(scene, reflection_ray, thresh, depth + 1, materials);
+				reflection_color = prod(reflection_color, m.kr); // multiply color by the reflective value
+			}
+			else {
+				int n = 3;
+				vector<vec3f> jitteredReflections = jitteredSample3D(reflection_direction, n, 0.2);
+
+				for (vec3f& j : jitteredReflections) {
+					ray reflection_ray(position, j);
+					int new_depth = max(depth + 1, max_depth - 1);
+					vec3f new_color = traceRay(scene, reflection_ray, thresh, new_depth, materials);
+					new_color = prod(new_color, m.kr);
+
+					reflection_color += new_color;
+				}
+				reflection_color /= n * n * n;
+			}
 		}
 
 		// Calculate refraction
