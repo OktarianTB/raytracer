@@ -55,12 +55,17 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 
 		// Find diffuse and specular components
 		vec3f diffuseRef = prod(kd * maximum(i.N.dot(L), 0.0), vec3f(1.0, 1.0, 1.0) - kt); // multiplied by 1 - kt for refraction
-		vec3f specularRef = ks * pow(maximum(V.dot(R), 0.0), shininess * 128);
+		vec3f specularRef = ks* pow(maximum(V.dot(R), 0.0), shininess * 128);
+
+		if ((*iterator)->type == LightType::SPOT) {
+			specularRef = vec3f(0.1, 0.1, 0.1);
+		}
 
 		vec3f att = (*iterator)->distanceAttenuation(P) * (*iterator)->shadowAttenuation(P);
 
 		I += prod(att, diffuseRef + specularRef);
 	}
+
 	I += emissionColor; // Adding background color, not sure this is the right place though, seems to work
 	I.clamp();
 	return I;

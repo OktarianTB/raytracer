@@ -524,13 +524,14 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 		scene->add( new DirectionalLight( scene, 
 			tupleToVec( getField( child, "direction" ) ).normalize(),
 			tupleToVec( getColorField( child ) ) ) );
-	} else if( name == "point_light" ) {
-		if( child == NULL ) {
-			throw ParseError( "No info for point_light" );
+	}
+	else if (name == "point_light") {
+		if (child == NULL) {
+			throw ParseError("No info for point_light");
 		}
 
-		if (hasField(child, "constant_attenuation_coeff") 
-			&& hasField(child, "linear_attenuation_coeff") 
+		if (hasField(child, "constant_attenuation_coeff")
+			&& hasField(child, "linear_attenuation_coeff")
 			&& hasField(child, "quadratic_attenuation_coeff")) {
 			/*
 			scene->add(new PointLight(scene,
@@ -548,6 +549,19 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 				tupleToVec(getField(child, "position")),
 				tupleToVec(getColorField(child))));
 		}
+	} else if(name == "spot_light")	{
+		if (child == NULL) {
+			throw ParseError("No info for spot_light");
+		}
+
+		scene->add(new SpotLight(scene,								// scene
+			tupleToVec(getColorField(child)),						// color
+			tupleToVec(getField(child, "position")),				// position
+			tupleToVec(getField(child, "direction")).normalize(),	// direction
+			getField(child, "angle")->getScalar() * 3.14 / 180,		// angle
+			getField(child, "blend")->getScalar()					// blend
+		));
+
 	} else if (name == "ambient_light") {
 		if (child == NULL) {
 			throw ParseError("No info for ambient_light");

@@ -2,12 +2,12 @@ Trace Bells and Whistles Checklist for Grading
 
 HKUST login(s): ogt@connect.ust.hk + ashyntay@connect.ust.hk
 
-Delete yes/no when appropriate
+Total = 2.5 Bells
 
-W adaptive termination				yes/no
+W adaptive termination						yes
 W antialiasing by supersampling			yes/no
 +W jittering					yes/no
-B spot lights					yes/no
+B spot lights							yes
 B background image						yes
 B accelerate shadow atteuation			yes/no
 B overlapping tranparent objects		yes/no
