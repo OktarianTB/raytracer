@@ -17,6 +17,7 @@
 #include <FL/fl_file_chooser.H>		// FLTK file chooser
 
 #include "TraceGLWindow.h"
+#include "../scene/texture.h"
 
 class TraceUI {
 public:
@@ -41,6 +42,8 @@ public:
 	Fl_Button*          m_softShadowButton;
 	Fl_Button*          m_motionBlurButton;
 	Fl_Button*          m_glossyReflectionButton;
+
+	Fl_Button*			m_useBackgroundButton;
 
 	TraceGLWindow*		m_traceGlWindow;
 
@@ -68,6 +71,9 @@ private:
 	double		m_nAmbientLight;
 	double		m_nThreshold;
 
+	bool		m_nUseBackground = false;
+	Texture*	backgroundTexturePtr = nullptr;
+
 	bool        m_nDepthField       = false;
 	bool        m_nSoftShadow       = false;
 	bool        m_nMotionBlur       = false;
@@ -79,6 +85,7 @@ private:
 	static TraceUI* whoami(Fl_Menu_* o);
 
 	static void cb_load_scene(Fl_Menu_* o, void* v);
+	static void cb_load_background(Fl_Menu_* o, void* v);
 	static void cb_save_image(Fl_Menu_* o, void* v);
 	static void cb_exit(Fl_Menu_* o, void* v);
 	static void cb_about(Fl_Menu_* o, void* v);
@@ -95,6 +102,8 @@ private:
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);
+
+	static void cb_useBackground(Fl_Widget* o, void* v);
 
 	static void cb_depthField(Fl_Widget* o, void* v);
 	static void cb_softShadow(Fl_Widget* o, void* v);

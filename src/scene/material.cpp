@@ -1,6 +1,7 @@
 #include "ray.h"
 #include "material.h"
 #include "light.h"
+#include <utility>
 
 int Material::current_count = 0;
 
@@ -19,6 +20,17 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 	// shading model, including the contributions of all the light sources.
 	// You will need to call both distanceAttenuation() and shadowAttenuation()
 	// somewhere in your code in order to compute shadows and light falloff.
+
+	auto emissionColor = ke;
+	const auto* obj = dynamic_cast<const MaterialSceneObject*>(i.obj);
+	std::pair<double, double> p = obj->getUV(r, i);
+	if (obj != nullptr)
+	{
+		if (emissionTexturePtr != nullptr)
+		{
+			emissionColor = emissionTexturePtr->getColorOfSquare(p.first, p.second);
+		}
+	}
 
 	// Add emissive and ambient light components
 	vec3f I = ke;
@@ -49,7 +61,7 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 
 		I += prod(att, diffuseRef + specularRef);
 	}
-
+	I += emissionColor; // Adding background color, not sure this is the right place though, seems to work
 	I.clamp();
 	return I;
 }

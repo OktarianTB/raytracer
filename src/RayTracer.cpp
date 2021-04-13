@@ -8,6 +8,7 @@
 #include "scene/ray.h"
 #include "fileio/read.h"
 #include "fileio/parse.h"
+#include "SceneObjects/Square.h"
 #include <cmath>
 
 // Trace a top-level ray through normalized window coordinates (x,y)
@@ -103,7 +104,6 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 			}
 		}
 
-
 		// Return contributions of phong shading + reflection + refraction (todo)
 		return phong + reflection_color + refraction_color;
 	} else {
@@ -191,6 +191,26 @@ bool RayTracer::loadScene( char* fn )
 
 	bufferSize = buffer_width * buffer_height * 3;
 	buffer = new unsigned char[ bufferSize ];
+
+	// Some info in the console
+	cout << boolalpha << "Use background: " << useBackground << endl;
+	cout << boolalpha << "Is background set: " << (backgroundTexturePtr != nullptr) << endl;
+
+	// Background
+	if (useBackground) {
+		setupBackgroundObject();
+
+		auto* backgroundMaterialPtr = new Material();
+		backgroundMaterialPtr->emissionTexturePtr = backgroundTexturePtr;
+		backgroundSceneObjPtr->setMaterial(backgroundMaterialPtr);
+
+		const auto backgroundIt = std::find(scene->objects.begin(), scene->objects.end(), backgroundSceneObjPtr);
+		if (useBackground && backgroundIt == scene->objects.end())
+		{
+			// Add background object to scene.
+			scene->add(backgroundSceneObjPtr);
+		}
+	}
 	
 	// separate objects into bounded and unbounded
 	scene->initScene();
@@ -200,6 +220,33 @@ bool RayTracer::loadScene( char* fn )
 	m_bSceneLoaded = true;
 
 	return true;
+}
+
+void RayTracer::setupBackgroundObject()
+{
+	static const vec3f ONES = { 1.0, 1.0, 1.0 };
+	auto* backgroundMaterialPtr = new Material();
+	backgroundMaterialPtr->ke = ONES;
+	backgroundMaterialPtr->kd = ONES;
+	backgroundMaterialPtr->ks = ONES;
+	backgroundMaterialPtr->shininess = 0.6;
+	backgroundSceneObjPtr = new Square(scene, backgroundMaterialPtr);
+	auto* transformPtr = &scene->transformRoot;
+	auto& m = scene->getCamera()->m;
+	const mat4f rot = {
+		vec4f{m[0][0], m[0][1], m[0][2], 0.0},
+		vec4f{m[1][0], m[1][1], m[1][2], 0.0},
+		vec4f{m[2][0], m[2][1], m[2][2], 0.0},
+		vec4f{0.0, 0.0, 0.0, 1.0}
+	};
+	const auto& eye = scene->getCamera()->eye;
+	static const auto BG_DISTANCE = 20.0;
+	backgroundSceneObjPtr->setTransform(
+		transformPtr->createChild(mat4f::translate(eye * 0.1))
+		->createChild(rot)
+		->createChild(mat4f::translate(vec3f{ 0.0, 0.0, -1.0 } *BG_DISTANCE))
+		->createChild(mat4f::scale(ONES * pow(BG_DISTANCE * 0.3, 2)))
+	);
 }
 
 void RayTracer::traceSetup( int w, int h )

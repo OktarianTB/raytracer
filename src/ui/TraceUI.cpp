@@ -30,6 +30,9 @@ void TraceUI::cb_load_scene(Fl_Menu_* o, void* v)
 	if (newfile != NULL) {
 		char buf[256];
 
+		pUI->raytracer->backgroundTexturePtr = pUI->backgroundTexturePtr;
+		pUI->raytracer->useBackground = pUI->m_nUseBackground;
+
 		if (pUI->raytracer->loadScene(newfile)) {
 			sprintf(buf, "Ray <%s>", newfile);
 			done=true;	// terminate the previous rendering
@@ -38,6 +41,20 @@ void TraceUI::cb_load_scene(Fl_Menu_* o, void* v)
 		}
 
 		pUI->m_mainWindow->label(buf);
+	}
+}
+
+void TraceUI::cb_load_background(Fl_Menu_* o, void* v)
+{
+	TraceUI* pUI = whoami(o);
+	char* filename = fl_file_chooser("Load Background Image", "*.bmp", nullptr);
+
+	if (filename != nullptr)
+	{
+		delete[] pUI->backgroundTexturePtr;
+		pUI->backgroundTexturePtr = new Texture(filename);
+
+		fl_alert("Make sure that 'Use Background' is selected in the settings now!");
 	}
 }
 
@@ -117,6 +134,12 @@ void TraceUI::cb_thresholdSlides(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nThreshold = double(((Fl_Slider*)o)->value());
 }
 
+void TraceUI::cb_useBackground(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nUseBackground = bool(((Fl_Slider*)o)->value());
+}
+
+
 void TraceUI::cb_depthField(Fl_Widget* o, void* v)
 {
 	((TraceUI*)(o->user_data()))->m_nDepthField = bool(((Fl_Slider*)o)->value());
@@ -156,6 +179,9 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->raytracer->getScene()->distAttenLinearCoeff = pUI->m_nAttenuationLinear;
 		pUI->raytracer->getScene()->distAttenQuadraticCoeff = pUI->m_nAttenuationQuadratic;
 		pUI->raytracer->getScene()->threshold = pUI->m_nThreshold;
+
+		pUI->raytracer->backgroundTexturePtr = pUI->backgroundTexturePtr;
+		pUI->raytracer->useBackground = pUI->m_nUseBackground;
 
 		// CUSTOM ADDED BY ALUA
 		pUI->raytracer->getScene()->depthField = pUI->m_nDepthField;
@@ -280,6 +306,7 @@ double TraceUI::getThreshold()
 Fl_Menu_Item TraceUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 		{ "&Load Scene...",	FL_ALT + 'l', (Fl_Callback *)TraceUI::cb_load_scene },
+		{ "&Load Background...",	FL_ALT + 'b', (Fl_Callback*)TraceUI::cb_load_background },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)TraceUI::cb_save_image },
 		{ "&Exit",			FL_ALT + 'e', (Fl_Callback *)TraceUI::cb_exit },
 		{ 0 },
@@ -426,6 +453,11 @@ TraceUI::TraceUI() {
 		m_glossyReflectionButton->user_data((void*)(this));
 		m_glossyReflectionButton->value(false);
 		m_glossyReflectionButton->callback(cb_glossyReflection);
+
+		m_useBackgroundButton = new Fl_Check_Button(10, 260, 100, 25, "&Use Background Image");
+		m_useBackgroundButton->user_data((void*)(this));
+		m_useBackgroundButton->value(false);
+		m_useBackgroundButton->callback(cb_useBackground);
 
 		m_mainWindow->callback(cb_exit2);
 		m_mainWindow->when(FL_HIDE);

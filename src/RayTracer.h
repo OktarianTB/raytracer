@@ -4,6 +4,7 @@
 // The main ray tracer.
 
 #include "scene/scene.h"
+#include "scene/texture.h"
 #include "scene/ray.h"
 #include <stack>
 
@@ -29,6 +30,11 @@ public:
 	bool sceneLoaded();
 
 	int max_depth = 0;
+
+	Texture* backgroundTexturePtr = nullptr;
+	MaterialSceneObject* backgroundSceneObjPtr = nullptr;
+	bool useBackground = false;
+	void setupBackgroundObject();
 
 private:
 	unsigned char *buffer;

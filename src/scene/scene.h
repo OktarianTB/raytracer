@@ -229,6 +229,8 @@ public:
 	virtual const Material& getMaterial() const { return *material; }
 	virtual void setMaterial( Material *m )	{ material = m; }
 
+	virtual std::pair<double, double> getUV(const ray& r, const isect& i) const { return {}; }
+
 protected:
 	MaterialSceneObject( Scene *scene, Material *mat ) 
 		: SceneObject( scene ), material( mat ) {}
@@ -285,8 +287,8 @@ public:
 	bool motionBlur        = false;
 	bool glossyReflection = false;
 
-private:
     list<Geometry*> objects;
+private:
 	list<Geometry*> nonboundedobjects;
 	list<Geometry*> boundedobjects;
     list<Light*> lights;

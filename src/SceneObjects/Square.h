@@ -15,6 +15,9 @@ public:
 	virtual bool intersectLocal( const ray& r, isect& i ) const;
 	virtual bool hasBoundingBoxCapability() const { return true; }
 
+	std::pair<double, double> getUV(const ray& r, const isect& i) const override;
+	static vec3f getP(const ray& r, const isect& i);
+
     virtual BoundingBox ComputeLocalBoundingBox()
     {
         BoundingBox localbounds;

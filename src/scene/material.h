@@ -8,6 +8,7 @@
 #define __MATERIAL_H__
 
 #include "../vecmath/vecmath.h"
+#include "texture.h"
 
 class Scene;
 class ray;
@@ -58,6 +59,8 @@ public:
                                 // as opposed to the "default" material which is
                                 // a pleasant blue.
     static const Material zero;
+
+    Texture* emissionTexturePtr = nullptr;
 
     Material &
     operator+=( const Material &m )
