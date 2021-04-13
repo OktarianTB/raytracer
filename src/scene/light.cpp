@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "light.h"
+#include "../helper.h"
 
 double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 {
@@ -11,20 +12,48 @@ double DirectionalLight::distanceAttenuation( const vec3f& P ) const
 
 vec3f DirectionalLight::shadowAttenuation( const vec3f& P ) const
 {
-    // YOUR CODE HERE:
-    // You should implement shadow-handling code here.
-	vec3f dir = getDirection(P).normalize();
-	ray shadRay = ray(P, dir);
-	vec3f shadAtten = getColor(P);
-	isect iPoint;
+	// YOUR CODE HERE:
+	// You should implement shadow-handling code here.
 
-	while (scene->intersect(shadRay, iPoint)) {
-		// Non-transparent material
-		if (iPoint.getMaterial().kt.iszero())
-			return vec3f(0.0, 0.0, 0.0);
-		// Transparent material
-		shadAtten = prod(shadAtten, iPoint.getMaterial().kt);
-		shadRay = ray(shadRay.at(iPoint.t), dir);
+	vec3f dir = getDirection(P).normalize();
+	vec3f shadAtten;
+
+	if (!scene->softShadow)
+	{
+		ray shadRay = ray(P, dir);
+		isect i;
+		shadAtten = getColor(P);
+
+		while (scene->intersect(shadRay, i)) {
+			// Non-transparent material
+			if (i.getMaterial().kt.iszero())
+				return vec3f(0.0, 0.0, 0.0);
+			// Transparent material
+			shadAtten = prod(shadAtten, i.getMaterial().kt);
+			shadRay = ray(shadRay.at(i.t), dir);
+		}
+	}
+	else
+	{
+		int n = 4;
+		vector<vec3f> jitteredLights = jitteredSample3D(dir, n, 0.2);
+		for (vec3f& l : jitteredLights) {
+			ray shadRay = ray(P, l);
+			isect i;
+			vec3f newAtten = getColor(P);
+
+			while (scene->intersect(shadRay, i)) {
+				// Non-transparent material
+				if (i.getMaterial().kt.iszero())
+					newAtten = vec3f(0.0, 0.0, 0.0);
+				// Transparent material
+				newAtten = prod(newAtten, i.getMaterial().kt);
+				shadRay = ray(shadRay.at(i.t), l);
+			}
+
+			shadAtten += newAtten;
+		}
+		shadAtten /= n * n * n;
 	}
 
 	return shadAtten;
@@ -73,20 +102,48 @@ vec3f PointLight::getDirection( const vec3f& P ) const
 
 vec3f PointLight::shadowAttenuation(const vec3f& P) const
 {
-    // YOUR CODE HERE:
-    // You should implement shadow-handling code here.
-	vec3f dir = getDirection(P).normalize();
-	ray shadRay = ray(P, dir);
-	vec3f shadAtten = getColor(P);
-	isect iPoint;
+	// YOUR CODE HERE:
+	// You should implement shadow-handling code here.
 
-	while (scene->intersect(shadRay, iPoint)) {
-		// Non-transparent material
-		if (iPoint.getMaterial().kt.iszero())
-			return vec3f(0.0, 0.0, 0.0);
-		// Transparent material
-		shadAtten = prod(shadAtten, iPoint.getMaterial().kt);
-		shadRay = ray(shadRay.at(iPoint.t), dir);
+	vec3f dir = getDirection(P).normalize();
+	vec3f shadAtten;
+
+	if (!scene->softShadow)
+	{
+		ray shadRay = ray(P, dir);
+		isect i;
+		shadAtten = getColor(P);
+
+		while (scene->intersect(shadRay, i)) {
+			// Non-transparent material
+			if (i.getMaterial().kt.iszero())
+				return vec3f(0.0, 0.0, 0.0);
+			// Transparent material
+			shadAtten = prod(shadAtten, i.getMaterial().kt);
+			shadRay = ray(shadRay.at(i.t), dir);
+		}
+	}
+	else
+	{
+		int n = 4;
+		vector<vec3f> jitteredLights = jitteredSample3D(dir, n, 0.2);
+		for (vec3f& l : jitteredLights) {
+			ray shadRay = ray(P, l);
+			isect i;
+			vec3f newAtten = getColor(P);
+
+			while (scene->intersect(shadRay, i)) {
+				// Non-transparent material
+				if (i.getMaterial().kt.iszero())
+					newAtten = vec3f(0.0, 0.0, 0.0);
+				// Transparent material
+				newAtten = prod(newAtten, i.getMaterial().kt);
+				shadRay = ray(shadRay.at(i.t), l);
+			}
+
+			shadAtten += newAtten;
+		}
+		shadAtten /= n * n * n;
 	}
 
 	return shadAtten;
