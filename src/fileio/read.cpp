@@ -20,6 +20,8 @@
 #include "../SceneObjects/Sphere.h"
 #include "../SceneObjects/Square.h"
 #include "../SceneObjects/Torus.h"
+#include "../SceneObjects/Hyperboloid.h"
+#include "../SceneObjects/Paraboloid.h"
 #include "../scene/light.h"
 
 typedef map<string,Material*> mmap;
@@ -326,6 +328,15 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 		}
 		else if (name == "torus") {
 			obj = new Torus(scene, mat);
+		}
+		else if (name == "hyperboloid") {
+			bool type_x = true;
+			maybeExtractField(child, "type_x", type_x);
+
+			obj = new Hyperboloid(scene, mat, type_x);
+		}
+		else if (name == "paraboloid") {
+			obj = new Paraboloid(scene, mat, true);
 		}
 		
 

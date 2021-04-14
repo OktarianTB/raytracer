@@ -53,7 +53,7 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 		const Material& m = i.getMaterial();
 		vec3f phong = m.shade(scene, r, i);
 
-		if (scene->threshold > phong.length())
+		if (scene->threshold > phong.length() || max_depth == 0)
 		{
 			return phong;
 		}

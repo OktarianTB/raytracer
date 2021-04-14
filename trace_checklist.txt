@@ -2,7 +2,7 @@ Trace Bells and Whistles Checklist for Grading
 
 HKUST login(s): ogt@connect.ust.hk + ashyntay@connect.ust.hk
 
-Total = 2.5 Bells
+Total = 5.5 Bells
 
 W adaptive termination						yes
 W antialiasing by supersampling			yes/no
@@ -16,8 +16,10 @@ BW antialiasing by adaptive supersampling	yes/no
 BW Warn model					yes/no
 2B bump mapping					yes/no
 2B solid/procedural texture			yes/no
-2B new geometry (quadrics)					yes
-	- Torus
+2B new geometry (quadrics)					
+	- Torus							yes
+	- Hyperboloid						yes
+	- Paraboloid						yes (+1B?)
 2B height fields				yes/no
 2B first 					yes/no
 1W next for each Dof, soft shadows, 		yes/no

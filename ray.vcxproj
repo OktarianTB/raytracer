@@ -173,6 +173,8 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="src\SceneObjects\Hyperboloid.cpp" />
+    <ClCompile Include="src\SceneObjects\Paraboloid.cpp" />
     <ClCompile Include="src\SceneObjects\quartic.cpp" />
     <ClCompile Include="src\SceneObjects\Torus.cpp" />
     <ClCompile Include="src\scene\texture.cpp" />
@@ -282,6 +284,8 @@
   <ItemGroup>
     <ClInclude Include="src\helper.h" />
     <ClInclude Include="src\RayTracer.h" />
+    <ClInclude Include="src\SceneObjects\Hyperboloid.h" />
+    <ClInclude Include="src\SceneObjects\Paraboloid.h" />
     <ClInclude Include="src\SceneObjects\quartic.h" />
     <ClInclude Include="src\SceneObjects\Torus.h" />
     <ClInclude Include="src\scene\texture.h" />
