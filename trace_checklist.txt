@@ -16,7 +16,8 @@ BW antialiasing by adaptive supersampling	yes/no
 BW Warn model					yes/no
 2B bump mapping					yes/no
 2B solid/procedural texture			yes/no
-2B new geometry (quadrics)			yes/no
+2B new geometry (quadrics)					yes
+	- Torus
 2B height fields				yes/no
 2B first 					yes/no
 1W next for each Dof, soft shadows, 		yes/no

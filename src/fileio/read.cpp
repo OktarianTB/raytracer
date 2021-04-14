@@ -19,6 +19,7 @@
 #include "../SceneObjects/Cylinder.h"
 #include "../SceneObjects/Sphere.h"
 #include "../SceneObjects/Square.h"
+#include "../SceneObjects/Torus.h"
 #include "../scene/light.h"
 
 typedef map<string,Material*> mmap;
@@ -323,6 +324,10 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 		} else if( name == "square" ) {
 			obj = new Square( scene, mat );
 		}
+		else if (name == "torus") {
+			obj = new Torus(scene, mat);
+		}
+		
 
         obj->setTransform(transform);
 		scene->add(obj);
