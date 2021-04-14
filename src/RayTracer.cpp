@@ -24,7 +24,29 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 	auto materials = std::stack<Material>();
 	materials.push(Material::air());
 
-	return traceRay(scene, r, vec3f(1.0,1.0,1.0), 0, materials).clamp();
+	vec3f color(0.0, 0.0, 0.0);
+
+	if (!scene->depthField) {
+		color = traceRay(scene, r, vec3f(1.0, 1.0, 1.0), 0, materials).clamp();
+	}
+	else {
+		vec3f init_position = r.getPosition();
+		vec3f init_dir = r.getDirection().normalize();
+
+		double focalLength = scene->focalLength;
+		vec3f focalPoint = init_dir * focalLength + init_position;
+
+		int n = 3;
+		vector<vec3f> jitteredDOF = jitteredSample3D(init_dir, n, 0.2 * scene->aperture);
+		for (vec3f& new_dir : jitteredDOF) {
+			vec3f new_position = focalPoint - focalLength / (new_dir.dot(init_dir)) * new_dir;
+			ray new_r(new_position, new_dir);
+			color += traceRay(scene, new_r, vec3f(0.0, 0.0, 0.0), 0, materials).clamp();
+		}
+		color /= n * n * n;
+	}
+
+	return color;
 }
 
 // Do recursive ray tracing!  You'll want to insert a lot of code here

@@ -35,6 +35,9 @@ public:
 	Fl_Slider*			m_ambientLightSlider;
 	Fl_Slider*			m_ThresholdSlider;
 
+	Fl_Slider*          m_focalLengthSlider;
+	Fl_Slider*          m_apertureSlider;
+
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
 
@@ -79,6 +82,9 @@ private:
 	bool        m_nMotionBlur       = false;
 	bool        m_nGlossyReflection = false;
 
+	double      m_nFocalLength = 1;
+	double      m_nAperture = 1;
+
 // static class members
 	static Fl_Menu_Item menuitems[];
 
@@ -99,6 +105,9 @@ private:
 	static void cb_attenuationQuadraticSlides(Fl_Widget* o, void* v);
 	static void cb_ambientLightSlides(Fl_Widget* o, void* v);
 	static void cb_thresholdSlides(Fl_Widget* o, void* v);
+
+	static void cb_focalLengthSlides(Fl_Widget* o, void* v);
+	static void cb_apertureSlides(Fl_Widget* o, void* v);
 
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);

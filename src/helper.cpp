@@ -7,6 +7,7 @@ inline double random_double(double min, double max) {
     return min + (max - min) * random_double();
 }
 vector<vec3f> jitteredSample3D(vec3f d, int n, double range) {
+    d = d.normalize();
     vector<vec3f> res;
     for (int p = 0; p < n; p++) {
         for (int q = 0; q < n; q++) {
