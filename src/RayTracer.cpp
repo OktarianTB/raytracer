@@ -157,12 +157,6 @@ vec3f RayTracer::traceRay( Scene *scene, const ray& r,
 // i: incidence vector, n: normal, sourceRefIndex: source refraction index, targetRefIndex: target refraction index
 vec3f RayTracer::calculate_refraction(vec3f i, vec3f n, double eta1, double eta2)
 {
-	// I don't know if this is correct!!!
-	/*double theta1 = i.dot(n);
-	double theta2 = asin((eta1 * sin(theta1)) / eta2);
-	vec3f T = (eta1 / eta2) * (i + n * cos(theta1)) - n * cos(theta2);
-	return T;*/
-
 	vec3f I = -i; // incident ray
 	double eta = eta1 / eta2;
 	double cosi = n.dot(I);

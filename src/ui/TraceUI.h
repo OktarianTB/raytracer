@@ -63,6 +63,7 @@ public:
 	double		getAmbientLight();
 	double		getThreshold();
 
+	static char* scenePath;
 private:
 	RayTracer*	raytracer;
 

@@ -21,6 +21,9 @@ public:
 		localbounds.min = vec3f(-0.5, -0.5, -0.5);
         return localbounds;
     }
+
+	std::pair<double, double> getUV(const ray& r, const isect& i) const override;
+	void intersect(const ray& r, double& tMin, BoundingBox bb) const;
 };
 
 #endif // __BOX_H__

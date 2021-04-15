@@ -36,6 +36,13 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 	vec3f I = ke;
 	I += prod(prod(ka, scene->getAmbient()), vec3f(1.0, 1.0, 1.0) - kt); // multiplied by 1-kt for refraction
 
+	// Texture mapping
+	if (emissionTexturePtr != nullptr)
+	{
+		std::pair<double, double> p = obj->getUV(r, i);
+		emissionColor = emissionTexturePtr->getColorOfSquare(p.first, p.second);
+	}
+
 	// Find intersection point
 	vec3f P = r.at(i.t);
 

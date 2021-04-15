@@ -6,7 +6,6 @@
 #include <cstring>
 #include <fstream>
 #include <strstream>
-
 #include <vector>
 
 #include "read.h"
@@ -23,6 +22,7 @@
 #include "../SceneObjects/Hyperboloid.h"
 #include "../SceneObjects/Paraboloid.h"
 #include "../scene/light.h"
+#include "../ui/TraceUI.h"
 
 typedef map<string,Material*> mmap;
 
@@ -426,6 +426,9 @@ static Material *getMaterial( Obj *child, const mmap& bindings )
 	return processMaterial( child );
 }
 
+
+
+
 static Material *processMaterial( Obj *child, mmap *bindings )
 // Generate a material from a parse sub-tree
 //
@@ -462,6 +465,22 @@ static Material *processMaterial( Obj *child, mmap *bindings )
     if( hasField( child, "shininess" ) ) {
         mat->shininess = getField( child, "shininess" )->getScalar();
     }
+
+	// TEXTURE MAPPING
+	if (hasField(child, "texture")) {
+		string name = "texture";
+		auto* fieldPtr = getField(child, name);
+
+		if (fieldPtr->getTypeName() == "string")
+		{
+			string f = fieldPtr->getString();
+			const char* cstr = f.c_str();
+			char* filename = new char[f.length() + 1];
+			strcpy(filename, f.c_str());
+
+			mat->emissionTexturePtr = new Texture(filename);
+		}
+	}
 
     if( bindings != NULL ) {
         // Want to bind, better have "name" field:

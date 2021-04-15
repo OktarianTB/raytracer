@@ -22,5 +22,8 @@ public:
 		localbounds.max = vec3f(1.0f, 1.0f, 1.0f);
         return localbounds;
     }
+
+	std::pair<double, double> getUV(const ray& r, const isect& i) const override;
+	void intersect(const ray& r, double& tMin, BoundingBox bb) const;
 };
 #endif // __SPHERE_H__

@@ -7,11 +7,11 @@ Texture::Texture(char* filename)
 {
 	imagePtr = readBMP(filename, imageWidth, imageHeight);
 
-	if (imageWidth != imageHeight)
+	if (imagePtr == nullptr)
 	{
-		fl_alert("Please select a square background to avoid unexpected behavior!");
+		fl_alert("Unable to load image :O");
 	}
-	
+
 }
 
 vec3f Texture::getColorOfSquare(const double u, const double v) const

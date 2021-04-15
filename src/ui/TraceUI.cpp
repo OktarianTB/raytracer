@@ -13,6 +13,7 @@
 #include "../RayTracer.h"
 
 static bool done;
+char* TraceUI::scenePath = nullptr;
 
 //------------------------------------- Help Functions --------------------------------------------
 TraceUI* TraceUI::whoami(Fl_Menu_* o)	// from menu item back to UI itself
@@ -26,6 +27,7 @@ void TraceUI::cb_load_scene(Fl_Menu_* o, void* v)
 	TraceUI* pUI=whoami(o);
 	
 	char* newfile = fl_file_chooser("Open Scene?", "*.ray", NULL );
+	scenePath = newfile;
 
 	if (newfile != NULL) {
 		char buf[256];
