@@ -2,12 +2,13 @@ Trace Bells and Whistles Checklist for Grading
 
 HKUST login(s): ogt@connect.ust.hk + ashyntay@connect.ust.hk
 
-Total = 17 Bells
+Total = 18.5 Bells
 
 Adaptive Termination: Use 'sphere_refract.ray', set depth and render. Then increase threshold and render again. You will see the difference.
 
-Antialiasing by supersamping: 
-Jittering:
+Antialiasing by supersampling: Render 'box_cyl_opaque_shadow.ray' or 'cylinder.ray'. Then increase 'Antialiasing size' from 1 to higher value 
+and render again. You will see the difference. The effect would be significant at antialiasing size = 3. 
+Jittering: Select 'Jittering'. Load 'box_cyl_opaque_shadow.ray' and render. You will notice the noise introduced by jittering.
 
 Spotlights: Use 'spotlight.ray' and render.
 
@@ -20,6 +21,11 @@ of reflection/transparency, load 'earth_refract.ray' (don't forget to set depth)
 New geometry: Load 'torus.ray', 'hyperboloid_X.ray', 'hyperboloid_Z.ray' and finally 'paraboloid.ray'.
 
 Effects: Load 'recurse_depth.ray' and then try out the different effects in the settings.
+
+Distributed ray tracing (Soft shadow): Select 'Soft Shadow'. Load 'box_cyl_opaque_shadow.ray' and render.
+Distributed ray tracing (Glossy reflection): Select 'Glossy Reflection'. Set depth to at least 2. Load 'box_cyl_reflect.ray' and render.
+Distributed ray tracing (Motion blur): Select 'Motion Blur'. Load 'box_cyl_opaque_shadow.ray' or 'cylinder.ray' and render.
+Distributed ray tracing (Depth of field): Select 'Depth of Field'. Set 'Focal length' and 'Aperture'. Load 'cylinder.ray' and render.
 
 Particle system: Load 'particles.ray' and render.
 
@@ -47,6 +53,7 @@ BW Warn model					yes/no
 	- Dof (2B)
 	- Soft shadows (1.5B)
 	- Glossy reflection (1.5B)	
+	- Motion blur (1.5B)
 3B high lever geometry (e.g. metaballs)		yes/no
 3B ray-intersection optimization		yes/no
 4B realistic shading model			yes/no
