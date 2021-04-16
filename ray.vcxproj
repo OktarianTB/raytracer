@@ -175,6 +175,7 @@
     </ClCompile>
     <ClCompile Include="src\SceneObjects\Hyperboloid.cpp" />
     <ClCompile Include="src\SceneObjects\Paraboloid.cpp" />
+    <ClCompile Include="src\SceneObjects\ParticleSystem.cpp" />
     <ClCompile Include="src\SceneObjects\quartic.cpp" />
     <ClCompile Include="src\SceneObjects\Torus.cpp" />
     <ClCompile Include="src\scene\texture.cpp" />
@@ -286,6 +287,7 @@
     <ClInclude Include="src\RayTracer.h" />
     <ClInclude Include="src\SceneObjects\Hyperboloid.h" />
     <ClInclude Include="src\SceneObjects\Paraboloid.h" />
+    <ClInclude Include="src\SceneObjects\ParticleSystem.h" />
     <ClInclude Include="src\SceneObjects\quartic.h" />
     <ClInclude Include="src\SceneObjects\Torus.h" />
     <ClInclude Include="src\scene\texture.h" />

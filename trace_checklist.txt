@@ -2,16 +2,16 @@ Trace Bells and Whistles Checklist for Grading
 
 HKUST login(s): ogt@connect.ust.hk + ashyntay@connect.ust.hk
 
-Total = 5.5 Bells
+Total = 17 Bells
 
 W adaptive termination						yes
-W antialiasing by supersampling			yes/no
-+W jittering					yes/no
+W antialiasing by supersampling					yes
++W jittering							yes
 B spot lights							yes
 B background image						yes
 B accelerate shadow atteuation			yes/no
 B overlapping tranparent objects		yes/no
-BW texture mapping (diffuse and transparent)	yes/no
+BW texture mapping (diffuse and transparent)			yes
 BW antialiasing by adaptive supersampling	yes/no
 BW Warn model					yes/no
 2B bump mapping					yes/no
@@ -19,13 +19,17 @@ BW Warn model					yes/no
 2B new geometry (quadrics)					
 	- Torus							yes
 	- Hyperboloid						yes
-	- Paraboloid						yes (+1B?)
+	- Paraboloid						yes (1B?)
 2B height fields				yes/no
-2B first 					yes/no
-1W next for each Dof, soft shadows, 		yes/no
-   motion blur, glossy reflection		yes/no
+2B first 							yes
+1.5B next for each Dof, soft shadows, 				
+   motion blur, glossy reflection
+	- Dof (2B)
+	- Soft shadows (1.5B)
+	- Glossy reflection (1.5B)	
 3B high lever geometry (e.g. metaballs)		yes/no
 3B ray-intersection optimization		yes/no
 4B realistic shading model			yes/no
 4B CSG						yes/no
+4B particle system						yes
 4B caustics					yes/no

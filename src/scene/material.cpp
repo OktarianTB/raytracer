@@ -23,9 +23,9 @@ vec3f Material::shade(Scene* scene, const ray& r, const isect& i) const
 
 	auto emissionColor = ke;
 	const auto* obj = dynamic_cast<const MaterialSceneObject*>(i.obj);
-	std::pair<double, double> p = obj->getUV(r, i);
 	if (obj != nullptr)
 	{
+		std::pair<double, double> p = obj->getUV(r, i);
 		if (emissionTexturePtr != nullptr)
 		{
 			emissionColor = emissionTexturePtr->getColorOfSquare(p.first, p.second);

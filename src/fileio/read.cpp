@@ -21,6 +21,7 @@
 #include "../SceneObjects/Torus.h"
 #include "../SceneObjects/Hyperboloid.h"
 #include "../SceneObjects/Paraboloid.h"
+#include "../SceneObjects/ParticleSystem.h"
 #include "../scene/light.h"
 #include "../ui/TraceUI.h"
 
@@ -338,6 +339,10 @@ static void processGeometry( string name, Obj *child, Scene *scene,
 		else if (name == "paraboloid") {
 			obj = new Paraboloid(scene, mat, true);
 		}
+		else if (name == "particles")
+		{
+			obj = new ParticleSystem(scene, mat);
+		}
 		
 
         obj->setTransform(transform);
@@ -613,6 +618,7 @@ static void processObject( Obj *obj, Scene *scene, mmap& materials )
 				name == "scale" ||
 				name == "transform" ||
                 name == "trimesh" ||
+				name == "particles" ||
                 name == "polymesh") { // polymesh is for backwards compatibility.
 		processGeometry( name, child, scene, materials, &scene->transformRoot);
 		//scene->add( geo );

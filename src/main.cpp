@@ -141,6 +141,28 @@ bool processArgs(int argc, char **argv) {
 	return true;
 }
 
+// Utilities
+
+float frand()
+{
+	return (float)rand() / RAND_MAX;
+}
+
+double drand(double low, double high)
+{
+	return (double)rand() / RAND_MAX * (high - low) + low;
+}
+
+int irand(int max)
+{
+	return rand() % max;
+}
+
+int irand(int min, int max)
+{
+	return rand() % (max - min) + min;
+}
+
 // usage : ray [option] in.ray out.bmp
 // Simply keying in ray will invoke a graphics mode version.
 // Use "ray --help" to see the detailed usage.
@@ -151,6 +173,7 @@ bool processArgs(int argc, char **argv) {
 // event handling overhead.
 int main(int argc, char **argv) {
 	progname=argv[0];
+	srand(time(NULL));
 
 	if (argc!=1) {
 		// text mode
