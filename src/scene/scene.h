@@ -282,13 +282,16 @@ public:
 	double distAttenQuadraticCoeff;
 	double threshold;
 
-	bool softShadow        = false;
-	bool motionBlur        = false;
-	bool glossyReflection = false;
-	bool depthField = false;
+	int antialiasingSize  = 1;
+	bool jittering        = false;
 
-	double focalLength = 1;
-	double aperture = 1; 
+	bool softShadow       = false;
+	bool motionBlur       = false;
+	bool glossyReflection = false;
+	bool depthField       = false;
+
+	double focalLength    = 1;
+	double aperture       = 1; 
 
 
     list<Geometry*> objects;

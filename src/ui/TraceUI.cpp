@@ -141,6 +141,14 @@ void TraceUI::cb_useBackground(Fl_Widget* o, void* v)
 	((TraceUI*)(o->user_data()))->m_nUseBackground = bool(((Fl_Check_Button*)o)->value());
 }
 
+void TraceUI::cb_antialiasingSizeSlides(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nAntialiasingSize = double(((Fl_Slider*)o)->value());
+}
+void TraceUI::cb_jittering(Fl_Widget* o, void* v)
+{
+	((TraceUI*)(o->user_data()))->m_nJittering = bool(((Fl_Check_Button*)o)->value());
+}
 
 
 void TraceUI::cb_softShadow(Fl_Widget* o, void* v)
@@ -199,6 +207,9 @@ void TraceUI::cb_render(Fl_Widget* o, void* v)
 		pUI->raytracer->useBackground = pUI->m_nUseBackground;
 
 		// CUSTOM ADDED BY ALUA
+		pUI->raytracer->getScene()->antialiasingSize = pUI->m_nAntialiasingSize;
+		pUI->raytracer->getScene()->jittering = pUI->m_nJittering;
+
 		pUI->raytracer->getScene()->softShadow = pUI->m_nSoftShadow;
 		pUI->raytracer->getScene()->motionBlur = pUI->m_nMotionBlur;
 		pUI->raytracer->getScene()->glossyReflection = pUI->m_nGlossyReflection;
@@ -444,30 +455,43 @@ TraceUI::TraceUI() {
 		m_ThresholdSlider->callback(cb_thresholdSlides);
 
 		// install slider focal length
-		m_ThresholdSlider = new Fl_Value_Slider(150, 245, 120, 20, "Focal length");
-		m_ThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_ThresholdSlider->type(FL_HOR_NICE_SLIDER);
-		m_ThresholdSlider->labelfont(FL_COURIER);
-		m_ThresholdSlider->labelsize(12);
-		m_ThresholdSlider->minimum(0);
-		m_ThresholdSlider->maximum(5);
-		m_ThresholdSlider->step(0.01);
-		m_ThresholdSlider->value(m_nFocalLength);
-		m_ThresholdSlider->align(FL_ALIGN_RIGHT);
-		m_ThresholdSlider->callback(cb_focalLengthSlides);
+		m_focalLengthSlider = new Fl_Value_Slider(150, 305, 120, 20, "Focal length");
+		m_focalLengthSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_focalLengthSlider->type(FL_HOR_NICE_SLIDER);
+		m_focalLengthSlider->labelfont(FL_COURIER);
+		m_focalLengthSlider->labelsize(12);
+		m_focalLengthSlider->minimum(0);
+		m_focalLengthSlider->maximum(5);
+		m_focalLengthSlider->step(0.01);
+		m_focalLengthSlider->value(m_nFocalLength);
+		m_focalLengthSlider->align(FL_ALIGN_RIGHT);
+		m_focalLengthSlider->callback(cb_focalLengthSlides);
 
 		// install slider aperture
-		m_ThresholdSlider = new Fl_Value_Slider(150, 270, 120, 20, "Aperture");
-		m_ThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_ThresholdSlider->type(FL_HOR_NICE_SLIDER);
-		m_ThresholdSlider->labelfont(FL_COURIER);
-		m_ThresholdSlider->labelsize(12);
-		m_ThresholdSlider->minimum(0);
-		m_ThresholdSlider->maximum(1);
-		m_ThresholdSlider->step(0.01);
-		m_ThresholdSlider->value(m_nAperture);
-		m_ThresholdSlider->align(FL_ALIGN_RIGHT);
-		m_ThresholdSlider->callback(cb_apertureSlides);
+		m_apertureSlider = new Fl_Value_Slider(150, 330, 120, 20, "Aperture");
+		m_apertureSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_apertureSlider->type(FL_HOR_NICE_SLIDER);
+		m_apertureSlider->labelfont(FL_COURIER);
+		m_apertureSlider->labelsize(12);
+		m_apertureSlider->minimum(0);
+		m_apertureSlider->maximum(1);
+		m_apertureSlider->step(0.01);
+		m_apertureSlider->value(m_nAperture);
+		m_apertureSlider->align(FL_ALIGN_RIGHT);
+		m_apertureSlider->callback(cb_apertureSlides);
+
+		// install slider antialising
+		m_antialiasingSizeSlider = new Fl_Value_Slider(10, 215, 180, 20, "Antialiasing size");
+		m_antialiasingSizeSlider->user_data((void*)(this)); // record self to be used by static callback functions
+		m_antialiasingSizeSlider->type(FL_HOR_NICE_SLIDER);
+		m_antialiasingSizeSlider->labelfont(FL_COURIER);
+		m_antialiasingSizeSlider->labelsize(12);
+		m_antialiasingSizeSlider->minimum(1);
+		m_antialiasingSizeSlider->maximum(5);
+		m_antialiasingSizeSlider->step(1);
+		m_antialiasingSizeSlider->value(m_nAntialiasingSize);
+		m_antialiasingSizeSlider->align(FL_ALIGN_RIGHT);
+		m_antialiasingSizeSlider->callback(cb_antialiasingSizeSlides);
 
 		m_renderButton = new Fl_Button(240, 27, 70, 25, "&Render");
 		m_renderButton->user_data((void*)(this));
@@ -477,27 +501,32 @@ TraceUI::TraceUI() {
 		m_stopButton->user_data((void*)(this));
 		m_stopButton->callback(cb_stop);
 
-		m_softShadowButton = new Fl_Check_Button(10, 205, 100, 25, "&Soft Shadow");
+		m_jitteringButton = new Fl_Check_Button(10, 235, 100, 25, "&Jittering");
+		m_jitteringButton->user_data((void*)(this));
+		m_jitteringButton->value(false);
+		m_jitteringButton->callback(cb_jittering);
+
+		m_softShadowButton = new Fl_Check_Button(10, 265, 100, 25, "&Soft Shadow");
 		m_softShadowButton->user_data((void*)(this));
 		m_softShadowButton->value(false);
 		m_softShadowButton->callback(cb_softShadow);
 
-		m_glossyReflectionButton = new Fl_Check_Button(150, 205, 100, 25, "&Glossy Reflection");
+		m_glossyReflectionButton = new Fl_Check_Button(150, 265, 100, 25, "&Glossy Reflection");
 		m_glossyReflectionButton->user_data((void*)(this));
 		m_glossyReflectionButton->value(false);
 		m_glossyReflectionButton->callback(cb_glossyReflection);
 
-		m_motionBlurButton = new Fl_Check_Button(10, 225, 100, 25, "&Motion Blur");
+		m_motionBlurButton = new Fl_Check_Button(10, 285, 100, 25, "&Motion Blur");
 		m_motionBlurButton->user_data((void*)(this));
 		m_motionBlurButton->value(false);
 		m_motionBlurButton->callback(cb_motionBlur);
 
-		m_depthFieldButton = new Fl_Check_Button(10, 245, 100, 25, "&Depth of Field");
+		m_depthFieldButton = new Fl_Check_Button(10, 305, 100, 25, "&Depth of Field");
 		m_depthFieldButton->user_data((void*)(this));
 		m_depthFieldButton->value(false);
 		m_depthFieldButton->callback(cb_depthField);
 
-		m_useBackgroundButton = new Fl_Check_Button(10, 305, 100, 25, "&Use Background Image");
+		m_useBackgroundButton = new Fl_Check_Button(10, 360, 100, 25, "&Use Background Image");
 		m_useBackgroundButton->user_data((void*)(this));
 		m_useBackgroundButton->value(false);
 		m_useBackgroundButton->callback(cb_useBackground);

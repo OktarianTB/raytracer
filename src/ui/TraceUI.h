@@ -38,8 +38,12 @@ public:
 	Fl_Slider*          m_focalLengthSlider;
 	Fl_Slider*          m_apertureSlider;
 
+	Fl_Slider*          m_antialiasingSizeSlider;
+
 	Fl_Button*			m_renderButton;
 	Fl_Button*			m_stopButton;
+
+	Fl_Button*          m_jitteringButton;
 
 	Fl_Button*          m_depthFieldButton;
 	Fl_Button*          m_softShadowButton;
@@ -78,13 +82,16 @@ private:
 	bool		m_nUseBackground = false;
 	Texture*	backgroundTexturePtr = nullptr;
 
+	int         m_nAntialiasingSize = 1;
+	bool        m_nJittering        = false;
+
 	bool        m_nDepthField       = false;
 	bool        m_nSoftShadow       = false;
 	bool        m_nMotionBlur       = false;
 	bool        m_nGlossyReflection = false;
 
-	double      m_nFocalLength = 1;
-	double      m_nAperture = 1;
+	double      m_nFocalLength      = 1;
+	double      m_nAperture         = 1;
 
 // static class members
 	static Fl_Menu_Item menuitems[];
@@ -110,10 +117,14 @@ private:
 	static void cb_focalLengthSlides(Fl_Widget* o, void* v);
 	static void cb_apertureSlides(Fl_Widget* o, void* v);
 
+	static void cb_antialiasingSizeSlides(Fl_Widget* o, void* v);
+
 	static void cb_render(Fl_Widget* o, void* v);
 	static void cb_stop(Fl_Widget* o, void* v);
 
 	static void cb_useBackground(Fl_Widget* o, void* v);
+
+	static void cb_jittering(Fl_Widget* o, void* v);
 
 	static void cb_depthField(Fl_Widget* o, void* v);
 	static void cb_softShadow(Fl_Widget* o, void* v);

@@ -313,18 +313,42 @@ void RayTracer::traceLines( int start, int stop )
 void RayTracer::tracePixel( int i, int j )
 {
 	vec3f col;
-
-	if( !scene )
+	if (!scene)
 		return;
-
-	double x = double(i)/double(buffer_width);
-	double y = double(j)/double(buffer_height);
-
-	col = trace( scene,x,y );
-
-	unsigned char *pixel = buffer + ( i + j * buffer_width ) * 3;
-
-	pixel[0] = (int)( 255.0 * col[0]);
-	pixel[1] = (int)( 255.0 * col[1]);
-	pixel[2] = (int)( 255.0 * col[2]);
+	// Regular sampling
+	if (!scene->jittering) {
+		int size = scene->antialiasingSize;
+		if (size == 1) {
+			double x = double(i) / double(buffer_width);
+			double y = double(j) / double(buffer_height);
+			col = trace(scene, x, y);
+		}
+		else {
+			i = i - 0.5;
+			j = j - 0.5;
+			double inc = 1.0 / double(size - 1);
+			for (int p = 0; p < size; p++) {
+				for (int q = 0; q < size; q++) {
+					double x = double(i + p * inc) / double(buffer_width);
+					double y = double(j + q * inc) / double(buffer_height);
+					col += trace(scene, x, y);
+				}
+			}
+			col /= double(size * size);
+		}
+	}
+	// Jittering
+	else {
+		i = i - 0.5;
+		j = j - 0.5;
+		double jitteredX = double(rand() % 5) / 5.0;
+		double jitteredY = double(rand() % 5) / 5.0;
+		double x = double(i + jitteredX) / double(buffer_width);
+		double y = double(j + jitteredY) / double(buffer_height);
+		col = trace(scene, x, y);
+	}
+	unsigned char* pixel = buffer + (i + j * buffer_width) * 3;
+	pixel[0] = (int)(255.0 * col[0]);
+	pixel[1] = (int)(255.0 * col[1]);
+	pixel[2] = (int)(255.0 * col[2]);
 }
