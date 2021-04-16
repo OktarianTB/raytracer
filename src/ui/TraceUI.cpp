@@ -461,7 +461,7 @@ TraceUI::TraceUI() {
 		m_focalLengthSlider->labelfont(FL_COURIER);
 		m_focalLengthSlider->labelsize(12);
 		m_focalLengthSlider->minimum(0);
-		m_focalLengthSlider->maximum(5);
+		m_focalLengthSlider->maximum(10);
 		m_focalLengthSlider->step(0.01);
 		m_focalLengthSlider->value(m_nFocalLength);
 		m_focalLengthSlider->align(FL_ALIGN_RIGHT);

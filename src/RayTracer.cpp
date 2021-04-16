@@ -26,26 +26,40 @@ vec3f RayTracer::trace( Scene *scene, double x, double y )
 
 	vec3f color(0.0, 0.0, 0.0);
 
+	vec3f init_position = r.getPosition();
+	vec3f init_dir = r.getDirection().normalize();
+
 	if (!scene->depthField) {
 		color = traceRay(scene, r, vec3f(1.0, 1.0, 1.0), 0, materials).clamp();
 	}
 	else {
-		vec3f init_position = r.getPosition();
-		vec3f init_dir = r.getDirection().normalize();
-
 		double focalLength = scene->focalLength;
 		vec3f focalPoint = init_dir * focalLength + init_position;
 
-		int n = 3;
+		int n = 4;
 		vector<vec3f> jitteredDOF = jitteredSample3D(init_dir, n, 0.2 * scene->aperture);
 		for (vec3f& new_dir : jitteredDOF) {
 			vec3f new_position = focalPoint - focalLength / (new_dir.dot(init_dir)) * new_dir;
 			ray new_r(new_position, new_dir);
 			color += traceRay(scene, new_r, vec3f(0.0, 0.0, 0.0), 0, materials).clamp();
 		}
-		color /= n * n * n;
+		color /= double(n * n * n);
 	}
 
+	if (scene->motionBlur) {
+		vec3f x = vec3f(0, 1, 0);
+		if ((init_dir - x).length() < RAY_EPSILON) x = vec3f(0, 0, 1);
+		vec3f z = (init_dir.cross(x).cross(init_dir)).normalize();
+		int n = 7;
+		vec3f new_dir = init_dir;
+		for (int i = 0; i < n; i++)
+		{
+			new_dir = (new_dir + 0.007 * z).normalize();
+			ray new_r(init_position, new_dir);
+			color += traceRay(scene, new_r, vec3f(1.0, 1.0, 1.0), 0, materials);
+		}
+		color /= double(n);
+	}
 	return color;
 }
 
