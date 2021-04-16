@@ -22,14 +22,9 @@ bool Hyperboloid::intersectLocal(const ray& r, isect& i) const
 
 	if (type_x)
 	{
-		A = -dy * dy + dx * dx;
-		B = -2 * oy * dy + 2 * ox * dx - dz;
-		C = -oy * oy + ox * ox - oz;
-		/*
 		A = -dx * dx + dy * dy + dz * dz;
 		B = 2 * (-ox * dx + oy * dy + oz * dz);
 		C = -ox * ox + oy * oy + oz * oz - 1;
-		*/
 	}
 	else {
 		A = dx * dx + dy * dy - dz * dz;

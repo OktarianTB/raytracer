@@ -4,6 +4,26 @@ HKUST login(s): ogt@connect.ust.hk + ashyntay@connect.ust.hk
 
 Total = 17 Bells
 
+Adaptive Termination: Use 'sphere_refract.ray', set depth and render. Then increase threshold and render again. You will see the difference.
+
+Antialiasing by supersamping: 
+Jittering:
+
+Spotlights: Use 'spotlight.ray' and render.
+
+Background image: First load a background image ("background.bmp"), select 'Use background' in settings and then load 
+'recurse_depth.ray' or 'sphere_refract.ray' to see the effect.
+
+Texture mapping: Load 'rubik.ray' for box mapping, then 'earth.ray' or 'mars.ray' for sphere mapping. To see effect
+of reflection/transparency, load 'earth_refract.ray' (don't forget to set depth).
+
+New geometry: Load 'torus.ray', 'hyperboloid_X.ray', 'hyperboloid_Z.ray' and finally 'paraboloid.ray'.
+
+Effects: Load 'recurse_depth.ray' and then try out the different effects in the settings.
+
+Particle system: Load 'particles.ray' and render.
+
+
 W adaptive termination						yes
 W antialiasing by supersampling					yes
 +W jittering							yes
