@@ -20,8 +20,6 @@ of reflection/transparency, load 'earth_refract.ray' (don't forget to set depth)
 
 New geometry: Load 'torus.ray', 'hyperboloid_X.ray', 'hyperboloid_Z.ray' and finally 'paraboloid.ray'.
 
-Effects: Load 'recurse_depth.ray' and then try out the different effects in the settings.
-
 Distributed ray tracing (Soft shadow): Select 'Soft Shadow'. Load 'box_cyl_opaque_shadow.ray' and render.
 Distributed ray tracing (Glossy reflection): Select 'Glossy Reflection'. Set depth to at least 2. Load 'box_cyl_reflect.ray' and render.
 Distributed ray tracing (Motion blur): Select 'Motion Blur'. Load 'box_cyl_opaque_shadow.ray' or 'cylinder.ray' and render.
